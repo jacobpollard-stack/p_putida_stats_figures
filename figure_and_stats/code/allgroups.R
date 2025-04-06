@@ -69,15 +69,13 @@ print(krus)
 theme_custom <- theme(
   panel.spacing.x = unit(1, "lines"),
   legend.position = 'right',
-  panel.grid.major.y = element_line(colour = "#e3e1e1",
-                                    linetype = 1),
-  panel.grid.major.x = element_line(colour = "#e3e1e1",
-                                    linetype = 1),
+  panel.grid.major.y = element_line(colour = "#e3e1e1", linetype = 1),
+  panel.grid.major.x = element_line(colour = "#e3e1e1", linetype = 1),
+  panel.grid.minor.y = element_line(colour = "#e3e1e1", linetype = 1),
   axis.text.x = element_text(hjust = 0.5),
   plot.title = element_text(size = 12, face = "bold", hjust = 0.5),
   plot.margin = margin(10, 10, 10, 10),
-  plot.subtitle = element_text(vjust = -250,
-                               hjust = 1)
+  plot.subtitle = element_text(vjust = -250, hjust = 1)
 )
 
 ## Plotting the data.
@@ -115,7 +113,7 @@ mean_CFU_count <- ggplot(data = data_tidy) +
   ### Plotting LOESS regression lines for the means.
   geom_smooth(data = data_summary,
               aes(x = factor(plate), 
-                  y = mean, 
+                  y = mean,
                   group = Contamination), 
               method = "loess", 
               colour = "black",
@@ -133,10 +131,14 @@ mean_CFU_count <- ggplot(data = data_tidy) +
   
   ### Adjusting the axes and legend.
   scale_x_discrete(labels = c("30", "40", "50", "60"),
-                   expand = c(0, 0)) +
-  scale_y_log10(labels = scales::comma,
-                expand = c(0,0),
-                limits = c(1000000, 10000000000)) +
+                   expand = c(0, 0)
+                   ) +
+  scale_y_log10(
+    labels = scales::comma,
+    expand = c(0, 0),
+    limits = c(10^6, 10^10),
+    breaks = c(10^6, 10^7, 10^8, 10^9, 10^10),
+    minor_breaks = rep(1:9, each = 1) * 10 ^ rep(6:9, times = 9)) +
   scale_colour_manual(values = c('1' = '#F8766D', '2' = '#7CAE00', '3' = '#00BFC4', '4' = '#C77CFF'),
                       labels = c('1', '2', '3', 
                                  'Before incubation at \nrespective soil moisture level')) +
@@ -144,8 +146,9 @@ mean_CFU_count <- ggplot(data = data_tidy) +
   ### Theming.
   cowplot::theme_cowplot() +
   theme_custom
-  theme(axis.text.x = element_text(angle = 0, hjust = 1))
+  theme(axis.text.x = element_text(angle = 0, hjust = 1)) 
 
 ## Print final plot.
 mean_CFU_count
+
 
