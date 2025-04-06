@@ -7,7 +7,7 @@ library(ggstatsplot)
 library(readxl)
 library(scales)
 
-# Read in the data sheetwise and omit missing data.
+# Read in the data sheetwise and process.
 
 ## Define the path.
 path <- '/Users/jacobpollard/Desktop/Uni/1.2/BABS-2 /Report and figure/Report/Y3948024/figure_and_stats/data/cfu_per_gram_dry_soil/cfu_per_g_d_soil_allgroups.xlsx'
@@ -38,7 +38,7 @@ data_summary <- data_tidy |>
 # Statistical tests.
 
 ## Check for normality in each sheet.
-mod <- lm(cfu_count ~ group, data = data_tidy)
+mod <- lm(cfu_count ~ group + Contamination, data = data_tidy)
 
 ### Freedman-Diaconis rule for bin width.
 iqr <- IQR(data_tidy$cfu_count)
@@ -54,12 +54,12 @@ histo
 #### Data appears to have a positive skew.
 
 ## Perform Shapiro-Wilk's test to check for normality.
-shap <- shapiro.test(data_tidy$cfu_count)
+shap <- shapiro.test(mod$residuals)
 shap
-#### p = 2.25e-10 < 0.05, there is evidence to suggest that the data is not normally distributed.
+#### p = 1.497e-7 < 0.05, there is evidence to suggest that the data is not normally distributed.
 
 ### Therefore we will perform a non-parametric test, eg. the Kruskal-Wallace test.
-krus <- kruskal.test(cfu_count ~ plate, data = data_tidy)
+krus <- kruskal.test(cfu_count ~ pl, data = data_tidy)
 print(krus)
 #### p = 0.8372 > 0.05 therefore there is no evidence to suggest that moisture level nor presence of hexadecane impacts growth of P. putida.
 
