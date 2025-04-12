@@ -6,15 +6,18 @@ library(FSA)
 library(ggstatsplot)
 library(readxl)
 library(scales)
-library(vegan)
 library(devtools)
 library(pairwiseAdonis)
 library(rstatix)
+library(rcompanion)
 
 # Load the data.
 
-## Read data into tibble.
+## Read data into tibble and coerce to factors.
 group3 <- read_excel('/Users/jacobpollard/Desktop/Uni/1.2/BABS-2 /Report and figure/Report/Y3948024/figure_and_stats/data/cfu_per_gram_dry_soil/cfu_per_g_d_soil_group3.xlsx')
+group3$Plate <- as.factor(group3$Plate)
+group3$Contamination <- as.factor(group3$Contamination)
+
 
 # Summarise data.
 
@@ -67,15 +70,20 @@ boxplot(dispersion)
 #### p = 0.002974 < 0.05, therefore there is evidence to suggest that the data is not homogeneously distributed.
 #### The boxplot shows that the data is not homogeneously distributed. The variance is not uniform across groups.
 
-## PERMANOVA 
-adonis <- adonis2(cfu_dist ~ Plate + Contamination, data = mutated)
-adonis
-#### p = 0.012 < 0.05, therefore there is evidence to suggest that soil moisture content does affect growth of P. putida.
+## Scheirer-Ray-Hare test.
+SRH <- scheirerRayHare(cfu_count ~ Plate * Contamination, data = group3)
+SRH
+#### p(Plate:Contamination) = 0.001737 < 0.05, therefore there is evidence to suggest that soil moisture content does affect growth of P. putida.
 
-### Post-hoc Pairwise PERMANOVA
-cfu_dist <- dist(group3$cfu_count)
-mutated$Group <- interaction(mutated$Plate, mutated$Contamination)
-pairwise.adonis2(cfu_dist ~ Group, data = mutated)
+### Post-hoc for Contamination
+dunnTest(cfu_count ~ Contamination, data = group3, method = "bonferroni")
+#### p.adj = 0.001356023 < 0.05, therefore there is evidence to suggest that hexadecane presence does affect growth of P. putida.
+
+### Post-hoc for Plate
+dunnTest(cfu_count ~ Plate, data = filter(group3, Contamination == "With hexadecane"), method = "bonferroni")
+dunnTest(cfu_count ~ Plate, data = filter(group3, Contamination == "Without hexadecane"), method = "bonferroni")
+#### With hexadecane: Only significant difference between 40 and 60 %, p.adj = 0.002187043
+#### Without hexadecane: Only significant difference between 40 and 60 %, p.adj = 0.02251052
 
 # Visualising the data.
 
@@ -165,3 +173,4 @@ mean_CFU_count <- ggplot() +
 
 ## Print final plot.
 mean_CFU_count
+

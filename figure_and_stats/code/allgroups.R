@@ -6,6 +6,11 @@ library(FSA)
 library(ggstatsplot)
 library(readxl)
 library(scales)
+library(vegan)
+library(devtools)
+library(pairwiseAdonis)
+library(rstatix)
+library(rcompanion)
 
 # Read in the data sheetwise and process.
 
@@ -22,8 +27,10 @@ data_tidy_list <- lapply(data_allgroups, function(sheet) {
   return(data)
 })
 
-## Combine into one dataframe.
+## Combine into one dataframe and coerce stuff to factors.
 data_tidy <- do.call(rbind, data_tidy_list)
+data_tidy$plate <- as.factor(data_tidy$plate)
+data_tidy$Contamination <- as.factor(data_tidy$Contamination)
 
 # Summarise data.
 data_summary <- data_tidy |>
@@ -58,10 +65,26 @@ shap <- shapiro.test(mod$residuals)
 shap
 #### p = 1.497e-7 < 0.05, there is evidence to suggest that the data is not normally distributed.
 
-### Therefore we will perform a non-parametric test, eg. the Kruskal-Wallace test.
-krus <- kruskal.test(cfu_count ~ pl, data = data_tidy)
-print(krus)
-#### p = 0.8372 > 0.05 therefore there is no evidence to suggest that moisture level nor presence of hexadecane impacts growth of P. putida.
+## Test for uniform distribution of variance.
+
+### Group data by plate and contamination.
+mutated <- data_tidy %>%
+  mutate(Mutated_column = interaction(plate, Contamination))
+cfu_dist <- dist(mutated$cfu_count)
+dispersion <- betadisper(cfu_dist, group = mutated$Mutated_column)
+### Check for homogeneity of variance.
+anova(dispersion)
+TukeyHSD(dispersion)
+
+## Visualise
+boxplot(dispersion)
+#### p = 0.05328 > 0.05, therefore there is evidence to suggest that the data is homogeneously distributed.
+#### The boxplot shows that the data is homogeneously distributed. The variance is not uniform across groups.
+
+### We will perform a non-parametric test, eg. the Scheirer-Ray-Hare test.
+SRH <- scheirerRayHare(cfu_count ~ plate * Contamination, data = filter(data_tidy, group != 4))
+SRH
+#### p(Plate:Contamination) = 0.78996 > 0.05, therefore there is no evidence to suggest that soil moisture content does affect growth of P. putida, using data from all groups.
 
 # Visualising the data.
 
@@ -150,5 +173,4 @@ mean_CFU_count <- ggplot(data = data_tidy) +
 
 ## Print final plot.
 mean_CFU_count
-
 
