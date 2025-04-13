@@ -1,15 +1,11 @@
 # Load necessary libraries.
 library(tidyverse)
 library(ggplot2)
-library(readxl)
 library(FSA)
-library(ggstatsplot)
 library(readxl)
 library(scales)
-library(devtools)
-library(pairwiseAdonis)
-library(rstatix)
 library(rcompanion)
+library(ggpubr)
 
 # Load the data.
 
@@ -80,10 +76,10 @@ dunnTest(cfu_count ~ Contamination, data = group3, method = "bonferroni")
 #### p.adj = 0.001356023 < 0.05, therefore there is evidence to suggest that hexadecane presence does affect growth of P. putida.
 
 ### Post-hoc for Plate
-dunnTest(cfu_count ~ Plate, data = filter(group3, Contamination == "With hexadecane"), method = "bonferroni")
-dunnTest(cfu_count ~ Plate, data = filter(group3, Contamination == "Without hexadecane"), method = "bonferroni")
-#### With hexadecane: Only significant difference between 40 and 60 %, p.adj = 0.002187043
-#### Without hexadecane: Only significant difference between 40 and 60 %, p.adj = 0.02251052
+dunnTest(cfu_count ~ Plate, data = filter(group3, Contamination == "With hexadecane"), method = "bh")
+dunnTest(cfu_count ~ Plate, data = filter(group3, Contamination == "Without hexadecane"), method = "bh")
+#### With hexadecane: Only significant difference between 30-40% and 40-60%, p.adj = 0.034969349 and 0.002187043, respectively
+#### Without hexadecane: Only significant difference between 30-60% and 40-60%, p.adj = 0.02788163 and 0.02251052, respectively
 
 # Visualising the data.
 
@@ -95,10 +91,22 @@ theme_custom <- theme(
   panel.grid.major.x = element_line(colour = "#e3e1e1", linetype = 1),
   panel.grid.minor.y = element_line(colour = "#e3e1e1", linetype = 1),
   axis.text.x = element_text(hjust = 0.5),
-  plot.title = element_text(size = 12, face = "bold", hjust = 0.5),
+  plot.title = element_text(size = 15, face = "bold", hjust = 0.5),
   plot.margin = margin(10, 10, 10, 10),
   plot.subtitle = element_text(vjust = -250, hjust = 1)
 )
+
+## Preparing for statistical annotations.
+pairwise_p <- data.frame(
+  group1 = c("30", "40", "30", "40"),
+  group2 = c("40", "60", "60", "60"),
+  y.position = c(2.05e9, 2.10e9, 300000000, 500000000),
+  p.adj = c(0.034969349, 0.002187043, 0.02788163, 0.02251052),
+  Contamination = c("With hexadecane", "With hexadecane", 
+                    "Without hexadecane", "Without hexadecane")
+)
+
+pairwise_p$label <- paste0("p.adj = ", signif(pairwise_p$p.adj, 3))
 
 ## Plotting the data.
 mean_CFU_count <- ggplot() +
@@ -154,10 +162,21 @@ mean_CFU_count <- ggplot() +
                    expand = c(0, 0)
   ) +
   scale_y_continuous(
-    labels = scales::comma,
-    expand = c(0, 0),
-    breaks = c(0, 250000000, 500000000, 750000000, 1000000000, 1250000000, 1500000000, 1750000000, 2000000000, 2250000000),
-    limits = c(0, 2.25e9)) +
+    labels = function(x) {
+      sapply(x, function(val) {
+        if (val == 0) {
+          "0"
+        } else {
+          formatted <- formatC(val / 10^floor(log10(val)), digits = 2, format = "f")
+          exponent <- floor(log10(val))
+          parse(text = paste0(formatted, " %*% 10^", exponent))
+        }
+      })
+    },
+    breaks = seq(0, 2.25e9, by = 2.5e8),
+    limits = c(0, 2.25e9),
+    expand = c(0, 0)
+  ) +
   scale_colour_manual(values = c('With hexadecane' = '#F8766D', 'Without hexadecane' = '#00BFC4', '4' = '#C77CFF'),
                       labels = c('With hexadecane', 'Without hexadecane', 
                                  'Before incubation at \nrespective soil moisture level')) +
@@ -165,6 +184,15 @@ mean_CFU_count <- ggplot() +
              aes(x = factor(Plate), 
                  y = cfu_count, 
                  colour = Contamination)) +
+  
+  ### Adding statistical annotations.
+  stat_pvalue_manual(pairwise_p, 
+                     label = "label", 
+                     xmin = "group1", xmax = "group2", 
+                     y.position = "y.position", 
+                     tip.length = 0.01,
+                     size = 3,
+                     bracket.size = 0.3) +
   
   ### Theming.
   cowplot::theme_cowplot() +

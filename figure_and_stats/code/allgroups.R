@@ -11,6 +11,7 @@ library(devtools)
 library(pairwiseAdonis)
 library(rstatix)
 library(rcompanion)
+library(ggpubr)
 
 # Read in the data sheetwise and process.
 
@@ -86,6 +87,16 @@ SRH <- scheirerRayHare(cfu_count ~ plate * Contamination, data = filter(data_tid
 SRH
 #### p(Plate:Contamination) = 0.78996 > 0.05, therefore there is no evidence to suggest that soil moisture content does affect growth of P. putida, using data from all groups.
 
+### Post-hoc for Contamination
+dunnTest(cfu_count ~ Contamination, data = filter(data_tidy, group != 4), method = "bonferroni")
+#### p.adj = 0.2040239 > 0.05, therefore there is no evidence to suggest that hexadecane presence does affect growth of P. putida.
+
+### Post-hoc for Plate
+dunnTest(cfu_count ~ plate, data = filter(data_tidy, Contamination == "With hexadecane", group != 4), method = "bh")
+dunnTest(cfu_count ~ plate, data = filter(data_tidy, Contamination == "Without hexadecane", group != 4), method = "bh")
+#### With hexadecane: No significant differences.
+#### Without hexadecane: No significant differences.
+
 # Visualising the data.
 
 ## Custom theme.
@@ -145,7 +156,7 @@ mean_CFU_count <- ggplot(data = data_tidy) +
   
   ### Adding labels and changing axis.
   labs(title = expression(italic("Pseudomonas putida")~"\nCFU count per gram of dry soil, by replicate"),
-       x = expression("Soil moisture level /% of field capacity"),
+       x = expression("Soil moisture level (% of field capacity)"),
        y = expression("log"[10]~"CFU count /g dry soil"),
        colour = "Replicates") +
   
@@ -157,7 +168,7 @@ mean_CFU_count <- ggplot(data = data_tidy) +
                    expand = c(0, 0)
                    ) +
   scale_y_log10(
-    labels = scales::comma,
+    labels = trans_format("log10", math_format(10^.x)),
     expand = c(0, 0),
     limits = c(10^6, 10^10),
     breaks = c(10^6, 10^7, 10^8, 10^9, 10^10),
@@ -165,7 +176,7 @@ mean_CFU_count <- ggplot(data = data_tidy) +
   scale_colour_manual(values = c('1' = '#F8766D', '2' = '#7CAE00', '3' = '#00BFC4', '4' = '#C77CFF'),
                       labels = c('1', '2', '3', 
                                  'Before incubation at \nrespective soil moisture level')) +
-  
+
   ### Theming.
   cowplot::theme_cowplot() +
   theme_custom
