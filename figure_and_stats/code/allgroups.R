@@ -163,7 +163,7 @@ mean_CFU_count <- ggplot(data = data_tidy) +
   ### Adjusting the axes and legend.
   scale_x_discrete(labels = c("30", "40", "50", "60"),
                    expand = c(0, 0)
-                   ) +
+  ) +
   scale_y_log10(
     labels = trans_format("log10", math_format(10^.x)),
     expand = c(0, 0),
@@ -173,12 +173,11 @@ mean_CFU_count <- ggplot(data = data_tidy) +
   scale_colour_manual(values = c('1' = '#F8766D', '2' = '#7CAE00', '3' = '#00BFC4', '4' = '#C77CFF'),
                       labels = c('1', '2', '3', 
                                  'Before incubation at \nrespective soil moisture level')) +
-
+  
   ### Theming.
   cowplot::theme_cowplot() +
   theme_custom
-  theme(axis.text.x = element_text(angle = 0, hjust = 1)) 
+theme(axis.text.x = element_text(angle = 0, hjust = 1)) 
 
 ## Print final plot.
 mean_CFU_count
-
