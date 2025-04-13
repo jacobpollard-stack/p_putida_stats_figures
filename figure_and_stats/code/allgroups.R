@@ -1,13 +1,10 @@
 # Load necessary libraries.
 library(tidyverse)
 library(ggplot2)
-library(readxl)
 library(FSA)
-library(ggstatsplot)
 library(readxl)
 library(scales)
 library(vegan)
-library(devtools)
 library(pairwiseAdonis)
 library(rstatix)
 library(rcompanion)
