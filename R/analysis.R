@@ -587,3 +587,8 @@ ggsave(filename = 'group3.pdf',
        height = 6,
        dpi = 300
 )
+
+# Things to do:
+## Get rid of duplicate code eg. designing the theme twice.
+## Make sure that dataframes and variables do not have the same name!!
+## Continue writing tibbles and printing stuff out in RFMD.
