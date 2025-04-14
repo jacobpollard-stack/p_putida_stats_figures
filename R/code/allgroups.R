@@ -5,15 +5,12 @@ library(FSA)
 library(readxl)
 library(scales)
 library(vegan)
-library(pairwiseAdonis)
-library(rstatix)
 library(rcompanion)
-library(ggpubr)
 
 # Read in the data sheetwise and process.
 
 ## Define the path.
-path <- '/Users/jacobpollard/Desktop/Uni/1.2/BABS-2 /Report and figure/Report/Y3948024/figure_and_stats/data/cfu_per_gram_dry_soil/cfu_per_g_d_soil_allgroups.xlsx'
+path <- '/Users/jacobpollard/Desktop/Uni/1.2/BABS-2 /Report and figure/Report/Y3948024/R/data/cfu_per_g_d_soil_allgroups.xlsx'
 
 ## Load the sheet names into a variable.
 data_allgroups <- excel_sheets(path)
