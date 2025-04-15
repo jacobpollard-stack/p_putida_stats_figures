@@ -43,7 +43,8 @@
 ## Analytical Overview ----------------------------------------------------------
 
 ### All data processing and visualisation were conducted in 
-### **R (v2024.12.0+467)** via **RStudio**, using **Git** for version control 
+### **R version 4.4.1 (2024-06-14) -- "Race for Your Life"** via **RStudio**, 
+### using **Git** for version control 
 ### on macOS Sequoia (v15.3.1).
 
 ### Tests used:
