@@ -1,10 +1,4 @@
-# ---
-# title: "The Effect of Soil Moisture Content on the Growth and Hexadecane 
-# Remediation Capacity of *Pseudomonas putida*"
-# author: "Y3948024"
-# date: 15-04-2025
-# ---
-  
+
 # The effect of soil moisture content on growth and hexadecane remediation 
 # of *Pseudomonas putida* -------------------------------------------------------
 
