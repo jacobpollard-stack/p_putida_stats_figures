@@ -89,7 +89,7 @@
 
 <h2>IMPORTANT</h2>
 <p>You should set the working directory as the path to Y3948024 on YOUR machine</p>
-<p>setwd("path/to/Y3948024")</p>
+<pre><code>setwd("path/to/Y3948024")</code></pre>
 <p>I have done this in console in order to remain anonymous for the project submission</p>
 
 <h3>Required Libraries</h3>
