@@ -19,8 +19,8 @@
 
 <h2>Project Structure</h2>
 <ul>
-  <li><code>/analysis/</code> – Analysis files, including .pdf, respective .md, .html files, and all required files for knitting. Data files are duplicated here so that the .md can read them.</li>
-  <li><code>/data/</code> – Tidy data files</li>
+  <li><code>/analysis/</code> – Analysis files, including .pdf, respective .md, .html files, and all required files for knitting. Data files are located here so that the .rmd can knit successfully.</li>
+  <li><code>/analysis/data</code> – Tidy data files</li>
   <li><code>/figures/</code> – Statistical plots and figures</li>
   <li><code>/data_gel_image</code> – Annoted gel image from practical 1b</li>
   <li><code>/code/</code> – Scripts for producing figures and analysis</li>

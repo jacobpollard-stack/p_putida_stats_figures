@@ -1,7 +1,8 @@
 ---
-title: "The Effect of Soil Moisture Content on the Growth and Hexadecane Remediation Capacity of \\emph{Pseudomonas putida}"
+title: The Effect of Soil Moisture Content on the Growth and Hexadecane Remediation
+  Capacity of \emph{Pseudomonas putida}
 author: "Y3948024"
-date: 15-04-2025
+date: "15-04-2025"
 output:
   pdf_document:
     keep_tex: true
@@ -10,11 +11,14 @@ output:
     toc: false
     highlight: tango
     latex_engine: xelatex
-    includes:
+    includes: null
   in_header: preamble.tex
+  html_document:
+    toc: false
+    df_print: paged
 header-includes:
-  - \usepackage{fvextra}
-  - \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines=true,breakanywhere=true,commandchars=\\\{\}}
+- \usepackage{fvextra}
+- \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines=true,breakanywhere=true,commandchars=\\\{\}}
 ---
 
 # Experimental overview
@@ -34,7 +38,7 @@ Mean colony counts were normalised to CFU per gram of dry soil. Relevant dataset
 - Pre-incubation values: Sheet 4 in the general dataset
 - Gel image (PCR): `data_gel_image`
 
-All files are stored under the directory: `/Y3948024/data`.
+Data files are stored under the directory: `/Y3948024/analysis/data`. This is required for the .rmd to knit successfully.
 
 ## Analytical Overview
 
@@ -42,8 +46,9 @@ All data processing and visualisation were conducted in **R version 4.4.1 (2024-
 
 ### Tests used:
 - **Normality**: Shapiro–Wilk test (Shapiro & Wilk, 1965)
-- **Variance homogeneity**: ANOVA and Tukey’s HSD test (Fisher, 1925; Tukey, 1949)
-- **Non-parametric comparison**: Scheirer–Ray–Hare test (Scheirer et al., 1976), with post-hoc **Dunn’s tests** (Dunn, 1964)
+- **Variance homogeneity**: Levene's test (Levene, 1960)
+- **Non-parametric comparison**: Scheirer–Ray–Hare test (Scheirer et al., 1976)
+- **Post-hoc pairwise comparison** Dunn's test (Dunn, 1964)
 
 ### Packages and Software
 
@@ -77,7 +82,7 @@ library(car)            # regression diagnostics (Fox and Weisberg, 2019)
 ## Read in all Excel sheets and add a new column indicating the group each row came from
 
 ```{r load-allgroups, warning=FALSE}
-path <- 'cfu_per_g_d_soil_allgroups.xlsx'
+path <- 'data/cfu_per_g_d_soil_allgroups.xlsx'
 data_allgroups <- excel_sheets(path)
 data_tidy_list <- lapply(data_allgroups, function(sheet) {
   data <- read_excel(path, sheet = sheet)  # read each sheet
@@ -130,7 +135,7 @@ bin_width <- 2 * iqr / (n^(1/3))
 
 Bin width = 237686445
 
-### Visualise residual distribution to check normality
+### Visualise residual distribution to check normality of residuals
 
 ```{r plot-residuals-allgroups, echo=TRUE, warning=FALSE}
 resid_df <- tibble(residuals = mod$residuals)
@@ -140,13 +145,13 @@ ggplot(resid_df, aes(x = residuals)) +
 
 The data appears to have a positive skew, with a long tail on the right. This suggests that the data may not be normally distributed.
 
-### Shapiro-Wilk test for normality
+### Shapiro-Wilk test for normality of residuals
 
 ```{r shapiro-allgroups, echo=TRUE, warning=FALSE}
 shapiro.test(mod$residuals)
 ```
 
-p = 2.775e-05 < 0.05. Therefore there is evidence to suggest that the data is not normally distributed.
+p = 2.775e-05 < 0.05. Therefore there is evidence to suggest that the residuals are not normally distributed.
 
 ### Levene's test for homogeneity of variance
 
@@ -310,7 +315,7 @@ mean_CFU_count
 ## Read in group 3 data from Excel file
 
 ```{r group3-analysis, warning=FALSE}
-group3 <- read_excel('cfu_per_g_d_soil_group3.xlsx')
+group3 <- read_excel('data/cfu_per_g_d_soil_group3.xlsx')
 ```
 
 ## Convert relevant columns to factors for analysis
@@ -353,14 +358,14 @@ bin_width2 <- 2 * iqr2 / (n2^(1/3))
 
 Bin width = 237686445
 
-### Visualise residual distribution to check normality
+### Visualise residual distribution to check normality of residuals
 
 ```{r residuals-group3, echo=TRUE, warning=FALSE}
 ggplot(group3, aes(x = mod2$residuals)) +
   geom_histogram(binwidth = bin_width2)
 ```
 
-### Shapiro-Wilk test for normality
+### Shapiro-Wilk test for normality of residuals
 
 ```{r shapiro-group3, echo=TRUE, warning=FALSE}
 shapiro.test(mod2$residuals)
@@ -547,16 +552,15 @@ mean_CFU_count2
 
 ```{refs}
 Dunn, O.J. (1964) 'Multiple comparisons using rank sums', *Technometrics*, 6(3), pp. 241–252.  
-Fisher, R.A. (1925) *Statistical Methods for Research Workers*. Edinburgh: Oliver and Boyd.  
 Fox, J. and Weisberg, S. (2019) *An R Companion to Applied Regression*. 3rd edn. Thousand Oaks, CA: Sage.  
 Kassambara, A. (2023) *ggpubr: 'ggplot2'-Based Publication Ready Plots*. R package version 0.6.0.  
+Levene, H., 1960. **Robust tests for equality of variances*. In: I. Olkin, ed. 1960. Contributions to probability and statistics: essays in honor of Harold Hotelling. Stanford: Stanford University Press, pp.278–292.
 Mangiafico, S. (2024) *rcompanion: Functions to Support Extension Education Program Evaluation*. R package version 2.4.30.  
 Ogle, D.H. et al. (2024) *FSA: Fisheries Stock Analysis*. R package version 0.9.5.  
 Oksanen, J. et al. (2022) *vegan: Community Ecology Package*. R package version 2.6-4.  
 R Core Team (2024) *R: A Language and Environment for Statistical Computing*. Vienna: R Foundation for Statistical Computing.  
 Scheirer, C.J., Ray, W.S. and Hare, N. (1976) 'The analysis of ranked data derived from completely randomized factorial designs', *Biometrics*, 32(2), pp. 429–434.  
-Shapiro, S.S. and Wilk, M.B. (1965) 'An analysis of variance test for normality (complete samples)', *Biometrika*, 52(3/4), pp. 591–611.  
-Tukey, J.W. (1949) 'Comparing individual means in the analysis of variance', *Biometrics*, 5(2), pp. 99–114.  
+Shapiro, S.S. and Wilk, M.B. (1965) 'An analysis of variance test for normality (complete samples)', *Biometrika*, 52(3/4), pp. 591–611.   
 Wickham, H. (2016) *ggplot2: Elegant Graphics for Data Analysis*. New York: Springer.  
 Wickham, H. et al. (2019) *Welcome to the tidyverse*. R package version 2.0.0.  
 Wickham, H. and Bryan, J. (2023) *readxl: Read Excel Files*. R package version 1.4.3.  

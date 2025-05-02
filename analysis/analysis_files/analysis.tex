@@ -153,7 +153,9 @@ datasets include:
   Gel image (PCR): \texttt{data\_gel\_image}
 \end{itemize}
 
-All files are stored under the directory: \texttt{/Y3948024/data}.
+Data files are stored under the directory:
+\texttt{/Y3948024/analysis/data}. This is required for the .rmd to knit
+successfully.
 
 \subsection{Analytical Overview}\label{analytical-overview}
 
@@ -169,11 +171,12 @@ Sequoia (v15.3.1).
 \item
   \textbf{Normality}: Shapiro--Wilk test (Shapiro \& Wilk, 1965)
 \item
-  \textbf{Variance homogeneity}: ANOVA and Tukey's HSD test (Fisher,
-  1925; Tukey, 1949)
+  \textbf{Variance homogeneity}: Levene's test (Levene, 1960)
 \item
   \textbf{Non-parametric comparison}: Scheirer--Ray--Hare test (Scheirer
-  et al., 1976), with post-hoc \textbf{Dunn's tests} (Dunn, 1964)
+  et al., 1976)
+\item
+  \textbf{Post-hoc pairwise comparison} Dunn's test (Dunn, 1964)
 \end{itemize}
 
 \subsubsection{Packages and Software}\label{packages-and-software}
@@ -228,7 +231,7 @@ from}\label{read-in-all-excel-sheets-and-add-a-new-column-indicating-the-group-e
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{path }\OtherTok{\textless{}{-}} \StringTok{\textquotesingle{}cfu\_per\_g\_d\_soil\_allgroups.xlsx\textquotesingle{}}
+\NormalTok{path }\OtherTok{\textless{}{-}} \StringTok{\textquotesingle{}data/cfu\_per\_g\_d\_soil\_allgroups.xlsx\textquotesingle{}}
 \NormalTok{data\_allgroups }\OtherTok{\textless{}{-}} \FunctionTok{excel\_sheets}\NormalTok{(path)}
 \NormalTok{data\_tidy\_list }\OtherTok{\textless{}{-}} \FunctionTok{lapply}\NormalTok{(data\_allgroups, }\ControlFlowTok{function}\NormalTok{(sheet) \{}
 \NormalTok{  data }\OtherTok{\textless{}{-}} \FunctionTok{read\_excel}\NormalTok{(path, }\AttributeTok{sheet =}\NormalTok{ sheet)  }\CommentTok{\# read each sheet}
@@ -315,8 +318,8 @@ histogram}\label{use-the-freedman-diaconis-rule-to-determine-optimal-bin-width-f
 
 Bin width = 237686445
 
-\subsubsection{Visualise residual distribution to check
-normality}\label{visualise-residual-distribution-to-check-normality}
+\subsubsection{Visualise residual distribution to check normality of
+residuals}\label{visualise-residual-distribution-to-check-normality-of-residuals}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -331,8 +334,8 @@ normality}\label{visualise-residual-distribution-to-check-normality}
 The data appears to have a positive skew, with a long tail on the right.
 This suggests that the data may not be normally distributed.
 
-\subsubsection{Shapiro-Wilk test for
-normality}\label{shapiro-wilk-test-for-normality}
+\subsubsection{Shapiro-Wilk test for normality of
+residuals}\label{shapiro-wilk-test-for-normality-of-residuals}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -349,7 +352,7 @@ normality}\label{shapiro-wilk-test-for-normality}
 \end{verbatim}
 
 p = 2.775e-05 \textless{} 0.05. Therefore there is evidence to suggest
-that the data is not normally distributed.
+that the residuals are not normally distributed.
 
 \subsubsection{Levene's test for homogeneity of
 variance}\label{levenes-test-for-homogeneity-of-variance}
@@ -667,7 +670,7 @@ file}\label{read-in-group-3-data-from-excel-file}
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{group3 }\OtherTok{\textless{}{-}} \FunctionTok{read\_excel}\NormalTok{(}\StringTok{\textquotesingle{}cfu\_per\_g\_d\_soil\_group3.xlsx\textquotesingle{}}\NormalTok{)}
+\NormalTok{group3 }\OtherTok{\textless{}{-}} \FunctionTok{read\_excel}\NormalTok{(}\StringTok{\textquotesingle{}data/cfu\_per\_g\_d\_soil\_group3.xlsx\textquotesingle{}}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -729,8 +732,8 @@ histogram}\label{use-the-freedman-diaconis-rule-to-determine-optimal-bin-width-f
 
 Bin width = 237686445
 
-\subsubsection{Visualise residual distribution to check
-normality}\label{visualise-residual-distribution-to-check-normality-1}
+\subsubsection{Visualise residual distribution to check normality of
+residuals}\label{visualise-residual-distribution-to-check-normality-of-residuals-1}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -741,8 +744,8 @@ normality}\label{visualise-residual-distribution-to-check-normality-1}
 
 \includegraphics{analysis_files/figure-latex/residuals-group3-1.pdf}
 
-\subsubsection{Shapiro-Wilk test for
-normality}\label{shapiro-wilk-test-for-normality-1}
+\subsubsection{Shapiro-Wilk test for normality of
+residuals}\label{shapiro-wilk-test-for-normality-of-residuals-1}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1066,16 +1069,15 @@ annotations.}\label{preparing-statistical-annotations.}
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{Dunn, O.J. (1964) \textquotesingle{}Multiple comparisons using rank sums\textquotesingle{}, *Technometrics*, 6(3), pp. 241–252.  }
-\NormalTok{Fisher, R.A. (1925) *Statistical Methods for Research Workers*. Edinburgh: Oliver and Boyd.  }
 \NormalTok{Fox, J. and Weisberg, S. (2019) *An R Companion to Applied Regression*. 3rd edn. Thousand Oaks, CA: Sage.  }
 \NormalTok{Kassambara, A. (2023) *ggpubr: \textquotesingle{}ggplot2\textquotesingle{}{-}Based Publication Ready Plots*. R package version 0.6.0.  }
+\NormalTok{Levene, H., 1960. **Robust tests for equality of variances*. In: I. Olkin, ed. 1960. Contributions to probability and statistics: essays in honor of Harold Hotelling. Stanford: Stanford University Press, pp.278–292.}
 \NormalTok{Mangiafico, S. (2024) *rcompanion: Functions to Support Extension Education Program Evaluation*. R package version 2.4.30.  }
 \NormalTok{Ogle, D.H. et al. (2024) *FSA: Fisheries Stock Analysis*. R package version 0.9.5.  }
 \NormalTok{Oksanen, J. et al. (2022) *vegan: Community Ecology Package*. R package version 2.6{-}4.  }
 \NormalTok{R Core Team (2024) *R: A Language and Environment for Statistical Computing*. Vienna: R Foundation for Statistical Computing.  }
 \NormalTok{Scheirer, C.J., Ray, W.S. and Hare, N. (1976) \textquotesingle{}The analysis of ranked data derived from completely randomized factorial designs\textquotesingle{}, *Biometrics*, 32(2), pp. 429–434.  }
-\NormalTok{Shapiro, S.S. and Wilk, M.B. (1965) \textquotesingle{}An analysis of variance test for normality (complete samples)\textquotesingle{}, *Biometrika*, 52(3/4), pp. 591–611.  }
-\NormalTok{Tukey, J.W. (1949) \textquotesingle{}Comparing individual means in the analysis of variance\textquotesingle{}, *Biometrics*, 5(2), pp. 99–114.  }
+\NormalTok{Shapiro, S.S. and Wilk, M.B. (1965) \textquotesingle{}An analysis of variance test for normality (complete samples)\textquotesingle{}, *Biometrika*, 52(3/4), pp. 591–611.   }
 \NormalTok{Wickham, H. (2016) *ggplot2: Elegant Graphics for Data Analysis*. New York: Springer.  }
 \NormalTok{Wickham, H. et al. (2019) *Welcome to the tidyverse*. R package version 2.0.0.  }
 \NormalTok{Wickham, H. and Bryan, J. (2023) *readxl: Read Excel Files*. R package version 1.4.3.  }
