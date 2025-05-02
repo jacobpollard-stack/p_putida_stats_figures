@@ -13,7 +13,7 @@ library(car)            # regression diagnostics (Fox and Weisberg, 2019)
 
 ## Read in group 3 data from Excel file
 
-group3 <- read_excel('data/cfu_per_g_d_soil_group3.xlsx')
+group3 <- read_excel('analysis/data/cfu_per_g_d_soil_group3.xlsx')
 
 ## Convert relevant columns to factors for analysis
 

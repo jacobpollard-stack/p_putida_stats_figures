@@ -15,7 +15,7 @@ library(car)            # regression diagnostics (Fox and Weisberg, 2019)
 
 # Read in all Excel sheets and add a new column indicating the group each row came from
 
-path <- 'data/cfu_per_g_d_soil_allgroups.xlsx'
+path <- 'analysis/data/cfu_per_g_d_soil_allgroups.xlsx'
 data_allgroups <- excel_sheets(path)
 data_tidy_list <- lapply(data_allgroups, function(sheet) {
   data <- read_excel(path, sheet = sheet)  # read each sheet
