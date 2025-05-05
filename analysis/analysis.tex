@@ -111,7 +111,7 @@
 \title{The Effect of Soil Moisture Content on the Growth and Hexadecane
 Remediation Capacity of \emph{Pseudomonas putida}}
 \author{Y3948024}
-\date{15-04-2025}
+\date{03 May 2025}
 
 \begin{document}
 \maketitle
@@ -205,6 +205,19 @@ for each package are included inline using standard references.
 \item
   \textbf{\texttt{car}} (Fox and Weisberg, 2019)
 \end{itemize}
+
+\subsection{Note}\label{note}
+
+Bonferroni correction was used to test for differences in mean CFU count
+between contaminated and uncontaminated samples, while
+Benjamini-Hochberg correction was used to test for differences between
+soil moisture levels. This is because, in the former case, we were only
+testing between two groups; in the latter, we were testing 6 pairwise
+comparisons across 4 groups, which would inflate the type I error rate.
+Thus, we used the more powerful BH correction to increase sensitivity
+while still controlling the false discovery rate. The results of the
+Dunn's test were not consistent across the two corrections, so the
+results should be considered with caution.
 
 \section{Load required libraries}\label{load-required-libraries}
 
